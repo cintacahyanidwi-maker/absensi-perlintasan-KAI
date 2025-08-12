@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Absensi - Real-time, Kamera & Lokasi</title>
+  <style>
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--muted:#94a3b8;--glass:rgba(255,255,255,0.03)}
+    *{box-sizing:border-box;font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    body{margin:0;min-height:100vh;background:linear-gradient(180deg,#071029 0%, #071a2a 60%);color:#e6eef6;padding:24px;}
+    .container{max-width:980px;margin:0 auto}
+    header{display:flex;gap:16px;align-items:center;margin-bottom:18px}
+    header h1{font-size:1.25rem;margin:0}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;box-shadow:0 6px 24px rgba(2,6,23,0.6);}
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:16px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+
+    label{display:block;font-size:0.85rem;color:var(--muted);margin-bottom:6px}
+    input[type=text]{width:100%;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit}
+    .small{font-size:0.85rem;color:var(--muted)}
+
+    .clock{font-weight:700;font-size:1.25rem;letter-spacing:0.4px}
+    .meta{display:flex;gap:10px;align-items:center}
+
+    .video-wrap, .photo-wrap{background:var(--glass);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:8px}
+    video{width:100%;border-radius:8px;background:#000}
+    canvas{display:block;max-width:100%;border-radius:6px}
+    button{padding:10px 12px;border-radius:8px;border:0;background:var(--accent);color:#012;cursor:pointer;font-weight:600}
+    button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .row{display:flex;gap:8px}
+
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03);text-align:left;font-size:0.9rem}
+    th{font-size:0.85rem;color:var(--muted)}
+
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    .map-link{color:var(--accent);text-decoration:none;font-weight:600}
+    footer{margin-top:12px;color:var(--muted);font-size:0.85rem}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="card" style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;width:100%">
+        <div>
+          <h1>ABSEN PERLINTASAN KERETA API</h1>
+          <div class="small">Nama, jam real-time, kamera & lokasi — semua di browser</div>
+        </div>
+        <div style="text-align:right">
+          <div class="clock" id="clock">--:--:--</div>
+          <div class="small" id="date">-</div>
+        </div>
+      </div>
+    </header>
+    
+    <form id="attendanceForm">
+
+   <label for="NAMA">NAMA</label>
+<select id="NAMA" required>
+  <option value="" disabled selected>PILIH NAMA</option>
+  <option value="NUZHULUL ANAM">NUZHULUL ANAM</option>
+  <option value="REVO AGUSTIAN EKO PUTRA">REVO AGUSTIAN EKO PUTRA</option>
+  <option value="SEPTI DWI ARTONO">SEPTI DWI ARTONO</option>
+  <option value="BAYU PRIYONO">BAYU PRIYONO</option>
+  <option value="WAZIRUL HAKIM">WAZIRUL HAKIM</option>
+  <option value="NOVAL RIZKIAWAN">NOVAL RIZKIAWAN</option>
+  <option value="ACHMAD NABIL FAHRI">ACHMAD NABIL FAHRI</option>
+  <option value="MOHAMAD IMAM SLAMET">MOHAMAD IMAM SLAMET</option>
+  <option value="MIFTAHUL ULUM">MIFTAHUL ULUM</option>
+  <option value="ACHMAD AMIN">ACHMAD AMIN</option>
+  <option value="SUTOPO">SUTOPO</option>
+  <option value="VADLY ADITYA AKSAY PRATAMA">VADLY ADITYA AKSAY PRATAMA</option>
+  <option value="MADA SATRIA WIDODO">MADA SATRIA WIDODO</option>
+  <option value="ANDI HARIYANTO">ANDI HARIYANTO</option>
+  <option value="EKO ANDRIANTO">EKO ANDRIANTO</option>
+  <option value="RIO ANDIKA SETIAWAN">RIO ANDIKA SETIAWAN</option>
+  <option value="MOH. MUDHOFIR">MOH. MUDHOFIR</option>
+  <option value="GANDI HANIPUTRA">GANDI HANIPUTRA</option>
+  <option value="SADDAM HUSEIN">SADDAM HUSEIN</option>
+  <option value="ALFIN FITRIAN AKBAR">ALFIN FITRIAN AKBAR</option>
+  <option value="ANGGA SETIAWAN">ANGGA SETIAWAN</option>
+  <option value="ANGLING MAHESA">ANGLING MAHESA</option>
+  <option value="IVANO MOCHAMMAD RIZKY">IVANO MOCHAMMAD RIZKY</option>
+  <option value="NURUL ISMAN">NURUL ISMAN</option>
+  <option value="JANU RISKI">JANU RISKI</option>
+  <option value="DANU ARI SUTA">DANU ARI SUTA</option>
+  <option value="PURWANTO">PURWANTO</option>
+  <option value="BIMA SAKTI">BIMA SAKTI</option>
+  <option value="MUHAMMAD BA'BILLAH">MUHAMMAD BA'BILLAH</option>
+  <option value="MIFTAHUL HUDA">MIFTAHUL HUDA</option>
+  <option value="MOH HENDRA ERIAWAN">MOH HENDRA ERIAWAN</option>
+  <option value="BAYU PRATAMA">BAYU PRATAMA</option>
+  <option value="YUDA AHMAD FAUZI">YUDA AHMAD FAUZI</option>
+  <option value="KUSUMA BUDHI WARDHANA">KUSUMA BUDHI WARDHANA</option>
+  <option value="AGUS SUCAHYONO">AGUS SUCAHYONO</option>
+  <option value="NURUL WAHYUDI">NURUL WAHYUDI</option>
+  <option value="R. NAJIBURROHMAN">R. NAJIBURROHMAN</option>
+  <option value="MOH. WAHYUDI">MOH. WAHYUDI</option>
+  <option value="NANDA RAFIKA PUTRA">NANDA RAFIKA PUTRA</option>
+  <option value="FERY DWY ARIFIANTO">FERY DWY ARIFIANTO</option>
+  <option value="EKO WINDU SETIAWAN">EKO WINDU SETIAWAN</option>
+  <option value="UNTUNG AHMAD BAHTIAR">UNTUNG AHMAD BAHTIAR</option>
+  <option value="RINO SETIAWAN">RINO SETIAWAN</option>
+  <option value="TRI ADI P">TRI ADI P</option>
+  <option value="MAHATIR MUHAMAD">MAHATIR MUHAMAD</option>
+  <option value="BAYU KRISNA DINATA">BAYU KRISNA DINATA</option>
+  <option value="SYARIF HIDAYATULOH">SYARIF HIDAYATULOH</option>
+  <option value="LENDRA DWI YULIYANTO">LENDRA DWI YULIYANTO</option>
+  <option value="ZAINAL ABIDIN">ZAINAL ABIDIN</option>
+  <option value="MUHAMMAD ADETIAR RIZKY DANUARTA">MUHAMMAD ADETIAR RIZKY DANUARTA</option>
+  <option value="IRFAN JULIONO">IRFAN JULIONO</option>
+  <option value="NANDA RIZKY SRIHENDRIAWAN">NANDA RIZKY SRIHENDRIAWAN</option>
+  <option value="WAHYU SETIKO AJI">WAHYU SETIKO AJI</option>
+  <option value="RIBUT SETIAWAN">RIBUT SETIAWAN</option>
+  <option value="TAUFIKUR ROHIM">TAUFIKUR ROHIM</option>
+  <option value="NADIN">NADIN</option>
+  <option value="NAWAWI">NAWAWI</option>
+  <option value="PRAYOGO DWIJO YUONO">PRAYOGO DWIJO YUONO</option>
+  <option value="BUDI SANTOSO">BUDI SANTOSO</option>
+  <option value="PAINO">PAINO</option>
+  <option value="AHMAD RUTBY">AHMAD RUTBY</option>
+  <option value="MOHAMAD RIFKI SANTOSO">MOHAMAD RIFKI SANTOSO</option>
+  <option value="SUJARNO">SUJARNO</option>
+  <option value="NURWAHID">NURWAHID</option>
+  <option value="MOH. BASTOMI">MOH. BASTOMI</option>
+  <option value="SARDJONO">SARDJONO</option>
+  <option value="FIKI RIYANTO">FIKI RIYANTO</option>
+  <option value="WILDAN ROSYID">WILDAN ROSYID</option>
+  <option value="AL MUZZAMMIL HIDAYATULLAH">AL MUZZAMMIL HIDAYATULLAH</option>
+  <option value="ERWIN WAHYU SUGIANTORO">ERWIN WAHYU SUGIANTORO</option>
+  <option value="WILDAN TAUFIK ROHMAN">WILDAN TAUFIK ROHMAN</option>
+  <option value="EDI SUSILO">EDI SUSILO</option>
+  <option value="EKSAN EFENDI">EKSAN EFENDI</option>
+  <option value="AINULLAH">AINULLAH</option>
+  <option value="MOHAMAD YUDISTIRA">MOHAMAD YUDISTIRA</option>
+  <option value="SAIFUL BAHRI">SAIFUL BAHRI</option>
+  <option value="BAGUS JOKO PRASETYO">BAGUS JOKO PRASETYO</option>
+  <option value="BAISUNI ANWAR">BAISUNI ANWAR</option>
+  <option value="ROBI PRIBADI OKTAFIAN">ROBI PRIBADI OKTAFIAN</option>
+  <option value="BAMBANG IRAWAN">BAMBANG IRAWAN</option>
+  <option value="RIAN AGUS RIANTO">RIAN AGUS RIANTO</option>
+  <option value="SURYONO">SURYONO</option>
+  <option value="SISMANTONO">SISMANTONO</option>
+  <option value="MADANI HAMID">MADANI HAMID</option>
+  <option value="AGUSNADI">AGUSNADI</option>
+  <option value="RONY HERMANSYAH PUTRA">RONY HERMANSYAH PUTRA</option>
+  <option value="IMAM MUHTADI">IMAM MUHTADI</option>
+  <option value="ANJAS FEBRIYATMOJO">ANJAS FEBRIYATMOJO</option>
+  <option value="DENIS IQBAL">DENIS IQBAL</option>
+  <option value="DIMAS PRASETYO">DIMAS PRASETYO</option>
+  <option value="DIMAS ALUNA PUTRA">DIMAS ALUNA PUTRA</option>
+  
+</select>
+
+          <div style="margin-bottom:12px" class="video-wrap">
+            <label>Kamera (Live)</label>
+            <video id="video" playsinline autoplay muted></video>
+            <div class="row">
+              <button type="button" id="startCam">Buka Kamera</button>
+              <button type="button" id="capture" class="ghost">Ambil Foto</button>
+              <button type="button" id="stopCam" class="ghost">Tutup Kamera</button>
+            </div>
+            <div class="photo-wrap" style="display:none" id="photoWrap">
+              <label>Preview Foto</label>
+              <canvas id="canvas" width="320" height="240"></canvas>
+            </div>
+          </div>
+
+          <div style="margin:12px 0" class="card">
+            <label>Lokasi</label>
+            <div id="locationInfo" class="small">Belum diambil</div>
+            <div class="row" style="margin-top:8px">
+              <button type="button" id="getLocation">Dapatkan Lokasi</button>
+              <button type="button" id="clearLocation" class="ghost">Hapus Lokasi</button>
+            </div>
+          </div>
+
+          <label for="JPL">JPL</label>
+<select id="JPL" required>
+  <option value="" disabled selected>PILIH JPL</option>
+  <option value="24">24</option>
+  <option value="23">20</option>
+  <option value="20">20</option>
+  <option value="10">10</option>
+  <option value="7">7</option>
+  <option value="6">6</option>
+  <option value="3">3</option>
+  <option value="1">1</option>
+  <option value="100">100</option>
+  <option value="102">102</option>
+  <option value="92">92</option>
+  <option value="88">88</option>
+  <option value="77">77</option>
+  <option value="60A">60A</option>
+  <option value="58">58</option>
+  <option value="55B">55B</option>
+  <option value="55A">55A</option>
+  <option value="55">55</option>
+  <option value="54">54</option>
+  <option value="51">51</option>
+<option value="50A">50A</option>
+<option value="49B">49B</option>
+<option value="105">105</option>
+
+
+  
+  
+  </select>
+
+          <div style="margin-top:12px" class="row">
+            <button type="submit">submit Absensi</button>
+            <button type="button" id="exportCsv" class="ghost">Export CSV</button>
+            <button type="button" id="clearAll" class="ghost">Hapus Semua</button>
+          </div>
+
+        <div style="margin-top:14px">
+          <h3 style="margin:0 0 8px 0">Rekap Absensi</h3>
+          <table id="recordsTable">
+            <thead>
+              <tr><th>Waktu</th><th>Nama</th><th>Foto</th><th>Lokasi</th><th>JPL</th>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        </form>
+
+
+      <aside class="card">
+        <h3>Petunjuk Singkat</h3>
+        <ol>
+          <li>Isi nama Anda.</li>
+          <li>Buka kamera lalu ambil foto (opsional tapi direkomendasikan).</li>
+          <li>Tekan "Dapatkan Lokasi" untuk menyertakan koordinat.</li>
+          <li>Tekan Submit untuk menyimpan ke rekap (disimpan di localStorage browser).</li>
+        </ol>
+
+        <div style="margin-top:12px">
+          <strong>Catatan:</strong>
+          <p class="small">Browser akan meminta izin kamera dan lokasi. Jika tidak muncul, cek izin di setelan browser Anda.</p>
+        </div>
+
+        <div style="margin-top:12px" class="meta">
+          <div>
+            <div class="small">Status Kamera</div>
+            <div id="camStatus" class="small">tertutup</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="container">
+      <div class="small">Demo dibuat untuk penggunaan lokal / intranet. Jangan gunakan untuk keperluan legal tanpa backend yang aman.</div>
+    </footer>
+  </div>
+
+  <script>
+    // Real-time clock
+    const clockEl = document.getElementById('clock');
+    const dateEl = document.getElementById('date');
+    function updateClock(){
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2,'0');
+      const mm = String(now.getMinutes()).padStart(2,'0');
+      const ss = String(now.getSeconds()).padStart(2,'0');
+      clockEl.textContent = `${hh}:${mm}:${ss}`;
+      dateEl.textContent = now.toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Camera handling
+    let stream = null;
+    const video = document.getElementById('video');
+    const startCam = document.getElementById('startCam');
+    const stopCam = document.getElementById('stopCam');
+    const captureBtn = document.getElementById('capture');
+    const canvas = document.getElementById('canvas');
+    const photoWrap = document.getElementById('photoWrap');
+    const camStatus = document.getElementById('camStatus');
+
+    async function openCamera(){
+      try{
+        stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'}, audio:false});
+        video.srcObject = stream;
+        camStatus.textContent = 'aktif';
+      }catch(e){
+        alert('Gagal membuka kamera: '+(e.message||e));
+        camStatus.textContent = 'error';
+      }
+    }
+    function closeCamera(){
+      if(stream){
+        stream.getTracks().forEach(t=>t.stop());
+        video.srcObject = null;
+        stream = null;
+      }
+      camStatus.textContent = 'tertutup';
+    }
+
+    startCam.addEventListener('click', openCamera);
+    stopCam.addEventListener('click', closeCamera);
+
+    captureBtn.addEventListener('click', ()=>{
+      if(!stream){ alert('Buka kamera terlebih dahulu.'); return; }
+      const ctx = canvas.getContext('2d');
+      // scale to canvas
+      const w = video.videoWidth || 320;
+      const h = video.videoHeight || 240;
+      canvas.width = w; canvas.height = h;
+      ctx.drawImage(video,0,0,w,h);
+      photoWrap.style.display = 'block';
+    });
+
+    // Location handling
+    const getLocationBtn = document.getElementById('getLocation');
+    const clearLocationBtn = document.getElementById('clearLocation');
+    const locationInfo = document.getElementById('locationInfo');
+    let currentLocation = null;
+
+    getLocationBtn.addEventListener('click', ()=>{
+      if(!('geolocation' in navigator)){
+        alert('Geolocation API tidak tersedia di browser ini.');
+        return;
+      }
+      locationInfo.textContent = 'Mencari lokasi...';
+      navigator.geolocation.getCurrentPosition(pos=>{
+        const lat = pos.coords.latitude.toFixed(6);
+        const lon = pos.coords.longitude.toFixed(6);
+        currentLocation = {lat,lon};
+        locationInfo.innerHTML = `Lat: ${lat} , Lon: ${lon} <br><a class="map-link" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${lat},${lon}">Lihat di peta</a>`;
+      }, err=>{
+        locationInfo.textContent = 'Gagal mendapatkan lokasi: '+err.message;
+      }, {enableHighAccuracy:true, timeout:10000});
+    });
+
+    clearLocationBtn.addEventListener('click', ()=>{
+      currentLocation = null;
+      locationInfo.textContent = 'Belum diambil';
+    });
+
+    // Records: store in localStorage
+    const form = document.getElementById('attendanceForm');
+    const tableBody = document.querySelector('#recordsTable tbody');
+
+    function loadRecords(){
+      const raw = localStorage.getItem('attendance_records');
+      return raw? JSON.parse(raw) : [];
+    }
+    function saveRecords(arr){
+      localStorage.setItem('attendance_records', JSON.stringify(arr));
+    }
+    function renderRecords(){
+      const records = loadRecords();
+      tableBody.innerHTML = '';
+      for(const r of records.reverse()){
+        const tr = document.createElement('tr');
+        const timeCell = document.createElement('td');
+        timeCell.textContent = new Date(r.timestamp).toLocaleString('id-ID');
+        const nameCell = document.createElement('td');
+        nameCell.textContent = r.name;
+        const photoCell = document.createElement('td');
+        if(r.photo){
+          const img = document.createElement('img');
+          img.src = r.photo; img.style.width='80px'; img.style.borderRadius='6px';
+          photoCell.appendChild(img);
+        } else { photoCell.textContent = '—'; }
+        const locCell = document.createElement('td');
+        if(r.location){
+          locCell.innerHTML = `Lat:${r.location.lat} Lon:${r.location.lon} <br><a class="map-link" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${r.location.lat},${r.location.lon}">Peta</a>`;
+        } else locCell.textContent = '—';
+        tr.appendChild(timeCell);tr.appendChild(nameCell);tr.appendChild(photoCell);tr.appendChild(locCell);
+        tableBody.appendChild(tr);
+      }
+    }
+    renderRecords();
+
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const name = document.getElementById('NAMA').value.trim();
+      if(!name){ alert('Nama harus diisi'); return; }
+      const jpl = document.getElementById('JPL').value.trim();
+      if(!jpl){ alert('jpl harus diisi'); return; }
+      const timestamp = new Date().toISOString();
+      let photoData = null;
+      if(canvas.width && canvas.height){
+        try{ photoData = canvas.toDataURL('image/png'); }catch(e){ photoData = null; }
+      }
+      const rec = {name, timestamp, photo: photoData, location: currentLocation};
+      const arr = loadRecords(); arr.push(rec); saveRecords(arr);
+      renderRecords();
+      form.reset(); photoWrap.style.display='none'; canvas.width=0; canvas.height=0; currentLocation=null; locationInfo.textContent='Belum diambil';
+      alert('Absensi tersimpan');
+    });
+
+    // Export CSV
+    document.getElementById('exportCsv').addEventListener('click', ()=>{
+      const records = loadRecords();
+      if(!records.length){ alert('Tidak ada data untuk diekspor'); return; }
+      const header = ['timestamp','nama','lat','lon','photo_dataurl'];
+      const rows = records.map(r=>[r.timestamp, r.name, r.location? r.location.lat:'', r.location? r.location.lon:'', r.photo? 'dataurl_present':'']);
+      const csv = [header.join(','), ...rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','))].join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'attendance.csv'; a.click(); URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('clearAll').addEventListener('click', ()=>{
+      if(confirm('Hapus semua rekap absensi dari browser?')){
+        localStorage.removeItem('attendance_records'); renderRecords();
+      }
+    });
+
+    // On page unload close camera
+    window.addEventListener('beforeunload', ()=>{ closeCamera(); });
+
+  </script>
+</body>
+</html>
